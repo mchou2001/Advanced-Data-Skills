@@ -140,7 +140,7 @@ Inserting images from a directory in my computer. It is important that that imag
 
 <center>
 ![Avocado Car](funny_cars.jpg){width="50%"}
-<center/>
+</center>
 
 Using R code to insert the image.
 ```{r images}
