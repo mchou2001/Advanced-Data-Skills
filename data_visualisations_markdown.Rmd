@@ -12,6 +12,16 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+Task:
+
+Convert to R Markdown some of the R scripts you've created previously. Add headers, hide output that's not needed etc.
+
+Challenges:
+
+Work out how to include a computed variable as part of your narrative text (e.g., “The mean height of humans in the starwars universe is…”)
+Work out how to make your visualisation smaller by changing its width
+Work out how to insert an image that is saved on your computer
+Work out how to label your code chunks, to make navigation easier
 
 # Setup
 Load in packages.
