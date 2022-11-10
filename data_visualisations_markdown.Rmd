@@ -1,0 +1,160 @@
+---
+title: "data_visualisations_markdown"
+author: "MC"
+date: "2022-11-10"
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Setup
+Load in packages.
+```{r packages, message = FALSE}
+library (tidyverse)
+library(Hmisc)
+```
+
+# Scatterplots
+## Scatterplot with 2 factors (manufacturer, fuel economy) {.tabset .tabset-fade .tabset-pills}
+### Scatterplot 1.1
+Create scatterplot with manufacturer as x and fuel economy as y.
+```{r scatterplot_1, fig.align = 'center'}
+mpg %>%
+  mutate(manufacturer = str_to_title(manufacturer)) %>%
+  ggplot(aes(x = manufacturer, y = cty)) +
+  geom_jitter(width = .1, alpha = .45, size = 2) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = .5, hjust = .5)) +
+  theme(text = element_text(size = 9)) +
+  labs(title = "City Fuel Economy by Manufacturer",
+       x = "Manufacturer",
+       y = "Fuel Economy in Cities (mpg)") +
+  theme(plot.title = element_text(hjust = .5))
+```
+
+### Scatterplot 1.2
+Tidy up scatterplot by reordering manufacturer based on highest to lowest fuel economy and changing the manufacturer to be shown on the y-axis. Furthermore, add marker indicating group mean and standard deviation.
+```{r scatterplot_2, fig.align = 'center'}
+mpg %>%
+  mutate(manufacturer = str_to_title(manufacturer)) %>%
+  ggplot(aes(x = fct_reorder(manufacturer, .fun = mean, cty), y = cty, color = manufacturer)) +
+  stat_summary(fun.data = mean_cl_boot, color = "dark blue", size = .7) +
+  geom_jitter(alpha = .25) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 0, vjust = .5, hjust = .5)) +
+  theme(text = element_text(size = 9)) +
+  labs(title = "City Fuel Economy by Manufacturer",
+       x = "Manufacturer",
+       y = "Fuel Economy in Cities (mpg)") +
+  theme(plot.title = element_text(hjust = .5)) +
+  guides(color = "none") +
+  coord_flip()
+```
+
+## Scatterplot with 3 variables (engine displacement, fuel economy, car class) {.tabset .tabset-pills}
+### Scatterplot 2.1
+Creating a visually different scatterplot where x (engine displacement) over y (fuel economy) is separated by a separate variable of car class. 
+```{r scatterplot_3, fig.align = 'center'}
+mpg %>%
+  filter(class != "suv") %>% #Are car class are included excpet for SUVs
+  mutate(class = str_to_title(class)) %>%
+  ggplot(aes(x = displ, y = cty, color = class)) +
+  geom_jitter(alpha = .25) +
+  theme_minimal() +
+  theme(text = element_text(size = 10)) +
+  guides(color = "none") +
+  facet_wrap(~ class) +
+  labs(title = "Engine Displacement on Fuel Conusmption for Different Car Classes",
+       x = "Engine Displacement (litres)",
+       y = "Fuel Economy in Cities (mpg)") +
+  theme(plot.title = element_text(hjust = .5))
+```
+
+### Scatterplot 2.2
+Creating a scatterplot with 3 factors all on the same graph. Added with smooth trend line.
+```{r scatterplot_4, fig.align = 'center'}
+mpg %>%
+  mutate(class = str_to_upper(class)) %>%
+  ggplot(aes(x = cty, y = displ)) +
+  geom_point(aes(color = class)) +
+  geom_smooth(se = FALSE) + #SE = FALSE adde trend line without displauing standard error
+  theme(text = element_text(size = 13)) +
+  theme_minimal() +
+  labs(title = "City Fuel Economy vs Engine Displacement for Different Car Class",
+       x = "City Fuel Economy (mpg)",
+       y = "Engine Displacement (litres)",
+       color = "Vehicle Class")
+```
+
+# Histograms
+## Histogram (Engine Size, count)
+```{r histogram, fig.align = 'center'}
+mpg %>%
+  ggplot(aes(x = displ)) +
+  geom_histogram(binwidth = .5, fill = "grey") +
+  labs(title = "Histogram of Engine Sizes",
+       x = "Engine Displacement (litres)",
+       y = "Count") +
+  theme(plot.title = element_text(hjust = .5))
+```
+
+```{r hidden_mean_calc, echo = FALSE, message = FALSE, eval = FALSE}
+mean(mpg$cty)
+```
+
+# Challenges
+## Challenge 1
+The average fuel use of popular car models from 1999 to 2008 in cities is `r mean(mpg$cty)` city miles per gallon.
+
+## Challenge 2
+The the size of the displayed histogram above is changed with out.width.
+```{r histogram_size_change, fig.align = 'center', out.width = "50%", echo = FALSE}
+mpg %>%
+  ggplot(aes(x = displ)) +
+  geom_histogram(binwidth = .5, fill = "grey") +
+  labs(title = "Histogram of Engine Sizes",
+       x = "Engine Displacement (litres)",
+       y = "Count") +
+  theme(plot.title = element_text(hjust = .5))
+```
+
+The size of the displayed histogram above is changed with fig.dim.
+```{r histogram_size_change_method_2, fig.align = 'center', fig.dim = c(8,6), echo = FALSE}
+mpg %>%
+  ggplot(aes(x = displ)) +
+  geom_histogram(binwidth = .5, fill = "grey") +
+  labs(title = "Histogram of Engine Sizes",
+       x = "Engine Displacement (litres)",
+       y = "Count") +
+  theme(plot.title = element_text(hjust = .5))
+```
+
+## Challenge 3
+Inserting images from a directory in my computer. It is important that that image is in the specified directory that the markdown is in.
+
+<center>
+![Avocado Car](funny_cars.jpg){width="50%"}
+<center/>
+
+Using R code to insert the image.
+```{r images}
+knitr::include_graphics("funny_cars.jpg")
+```
+
+## Challenge 4
+
+Labelling the code chunks:
+
+````markdown
+`r ''````{r whatever_name_you_choose}
+knitr::include_graphics("funny_cars.jpg")
+```
+````
+
+
