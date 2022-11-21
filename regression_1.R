@@ -94,10 +94,10 @@ anova(model_1, model_2)
 #Interpreting the model
 summary(model_2)
 # y-intercept = 944.3 
-# gradient = 0.0069693
+# gradient = 0.006963
 
 #Calculate predicted value based on model for 1000000 population
-predicted = 944.3 + (0.00693 * 1000000)
+predicted = 944.3 + (0.006963 * 1000000)
 predicted
 
 #Challenges----
